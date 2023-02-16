@@ -1,1 +1,72 @@
-<h1>あああ</h1>
+<% content_for(:title, "TOP") %>
+<% if user_signed_in? %>
+  <% if flash[:success] %>
+    <div class="alert alert-success" role="alert">
+      <%= flash[:success] %>
+    </div>
+  <% elsif flash[:delete] %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:delete] %>
+    </div>
+  <% elsif flash[:guest] %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:guest] %>
+    </div>
+  <% end %>
+  <div class="container">
+    <div class="headline">
+      <h2>Memorial List</h2>
+    </div>
+    <p class="wf-sawarabimincho"><span>卒業年度をクリックで詳細ページへ</span></p>
+  </div>
+  <div class="d-flex justify-content-center">
+    <%= image_tag "pattadakal-monuments-g1107ed294_640.jpg", class:"img-fluid" %>
+  </div>
+  <div class="container text-right">
+    <p class="wf-sawarabimincho">検索フォーム</p>
+    <%= search_form_for @q, url: search_remember_you_records_path do |f| %>
+      <%= f.label :teachers_teacher_name_cont, "教員氏名", class:"wf-sawarabimincho" %>
+      <%= f.search_field :teachers_teacher_name_cont, placeholder: "教員氏名を入力" %><br>
+      <%= f.label :students_student_name_cont, "生徒氏名", class:"wf-sawarabimincho" %>
+      <%= f.search_field :students_student_name_cont, placeholder: "生徒氏名を入力" %><br>
+      <%= f.label :students_student_club_cont, "部活動名", class:"wf-sawarabimincho" %>
+      <%= f.search_field :students_student_club_cont, placeholder: "部活動名を入力" %><br>
+      <%= f.submit "検索" %>
+    <% end %>
+  </div>
+  <table class="table table-striped">
+    <tbody>
+      <% @teams.each do |team| %> 
+        <tr>
+          <td class="text-center">   
+            <%= link_to team.graduation, remember_you_record_path(team.id), method: :get, class:"text-info" %>
+            <span>年度</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="text-center">
+    <%= link_to "新規作成", new_remember_you_record_path, class:"btn btn-outline-success" %>
+  </div>
+<% else %>
+  <div class="d-flex justify-content-center">
+    <%= image_tag"france-ge16d02909_640.jpg", class:"img-fluid" %>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="headline">
+          <h2>What's "Remember You" ?</h2>
+        </div>
+        <p>"Remember You"は過去に関わった教員や生徒の情報をまとめて管理し、<br>
+            好きな時にいつでも確認できるサイトです。簡単なアカウント登録ですぐに使える、先生方のためにつくられたサイトです。<br>
+            <span>詳しくは動画をクリック</span><br>
+        </p>
+      </div>
+      <div class="embed-responsive embed-responsive-21by9 col-md-6">
+        <%= video_tag "/assets/videos/アプリ紹介動画.mp4", playsinline: true, controls: true, autoplay: false, loop: false, muted: true %>
+      </div>
+    </div>
+  </div>
+<% end %>
