@@ -1,9 +1,9 @@
 class Team < ApplicationRecord
-  def self.ransackable_associations(auth_object: nil)
+  def self.ransackable_associations(auth_object = nil)
     ["teachers", "students", "user"]
   end
 
-  def self.ransackable_attributes(auth_object: nil)
+  def self.ransackable_attributes(auth_object = nil)
     ["graduation"]
   end
 
