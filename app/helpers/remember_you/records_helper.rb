@@ -1,0 +1,2 @@
+module RememberYou::RecordsHelper
+end

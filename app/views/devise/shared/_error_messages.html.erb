@@ -1,0 +1,12 @@
+<% if resource.errors.any? %>
+  <div class="alert alert-danger" role="alert">
+    <%= flash.now[:failer] = "完了していません。" %>
+  </div>
+  <div id="error_explanation">
+    <ul>
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,0 +1,101 @@
+<% content_for(:title, "EDIT") %>
+<% if flash[:failer] %>
+  <div class="alert alert-danger" role="alert">
+    <%= flash[:failer] %>
+  </div>
+<% end %>
+<%= render "shared/error", obj: @team %>
+<div class="container">
+  <div class="headline">
+    <h2>Edit</h2>
+  </div>
+  <p class="wf-sawarabimincho"><span>編集ページ</span></p>
+</div>
+<%= form_with model: @team, url: remember_you_record_path, method: :patch do |f| %>
+  <table class="table text-center">
+    <thead>
+      <tr class="table-info">
+        <th>卒業年度</th>
+        <th>学校名</th>
+        <th>成人式</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-light">
+        <td>
+          <%= f.number_field :graduation, placeholder: "半角数字" %>
+          <span>年度</span>
+        </td>
+        <%= f.fields_for :schools do |school| %>
+          <td>
+            <span>
+              <%= school.text_field :school_name, placeholder: "学校名を入力" %>
+              <%= school.select :kind, [ ["小学校","小学校"],["中学校","中学校"],["高等学校","高等学校"],["特別支援学校","特別支援学校"] ] %>
+            </span>
+          </td>
+          <td>
+            <%= school.number_field :ceremony, placeholder: "半角数字" %>
+            <span>年</span>
+          </td>
+          <%= school.hidden_field :user_id, value: @user.id %>
+          <%= school.hidden_field :team_id, value: @team.id %>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table text-center">
+    <thead>
+      <tr class="table-warning">
+        <th>教員情報</th>
+        <th>氏名</th>
+        <th>立場</th>
+        <th>備考欄</th>
+      </tr>
+    </thead>
+    <% i = 0 %>
+    <%= f.fields_for :teachers do |teacher| %>  
+      <tbody>
+        <tr class="table-light">
+          <td>教員<%= i + 1 %></td>
+          <td><%= teacher.text_field :teacher_name, placeholder: "氏名を入力" %></td>
+          <td><%= teacher.select :teacher_position, [ ["校長","校長"],["教頭","教頭"],["主任","主任"],["担任","担任"],["副担任","副担任"],["特別支援学級","特別支援学級"],["その他（備考欄へ）","その他"] ] %></td>
+          <td><%= teacher.text_field :teacher_others, placeholder: "現在の勤務先など" %></td>
+          <%= teacher.hidden_field :user_id, value: @user.id %>
+          <%= teacher.hidden_field :team_id, value: @team.id %>
+          <% i += 1 %>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+  <table class="table text-center">
+    <thead>
+      <tr class="table-success">
+        <th>生徒情報</th>
+        <th>氏名</th>
+        <th>氏名カナ</th>
+        <th>部活動</th>
+        <th>備考欄</th>
+      </tr>
+    </thead>
+    <% i = 0 %>
+    <%= f.fields_for :students do |student| %>
+      <tbody>
+        <tr class="table-light">
+          <td>生徒<%= i + 1 %></td>
+          <td><%= student.text_field :student_name, placeholder: "氏名を入力" %></td>
+          <td><%= student.text_field :student_kana, placeholder: "カナを入力" %></td>
+          <td><%= student.select :student_club, [ ["所属なし","所属なし"],["吹奏楽","吹奏楽"],["サッカー","サッカー"],["バスケットボール","バスケットボール"],["野球","野球"],["水泳","水泳"],["テニス","テニス"],["バレーボール","バレーボール"],["陸上","陸上"],["剣道","剣道"],["柔道","柔道"],["空手","空手"],["美術","美術"],["茶華道","茶華道"],["その他(備考欄へ)","その他"] ] %></td>
+          <td><%= student.text_field :student_others, placeholder: "「鈴木→佐藤」など" %></td>
+          <%= student.hidden_field :user_id, value: @user.id %>
+          <%= student.hidden_field :team_id, value: @team.id %>
+          <% i += 1 %>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+  <%= f.hidden_field :user_id, value: @user.id %>
+  <div class="text-center">
+    <%= f.submit"編集を完了する", class:"btn btn-outline-success" %>
+    <%= link_to "詳細ページへ戻る", remember_you_record_path, class:"btn btn-outline-secondary" %>
+  </div>
+<% end %>
