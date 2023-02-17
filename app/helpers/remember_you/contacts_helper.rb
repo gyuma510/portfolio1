@@ -1,2 +1,0 @@
-module RememberYou::ContactsHelper
-end
