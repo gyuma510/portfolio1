@@ -9,18 +9,18 @@ executors:
   ruby_and_postgres:
     docker:
       - image: cimg/ruby:3.0-browsers
-          environment:
-            BUNDLE_JOBS: "3"
-            BUNDLE_RETRY: "3"
-            PGHOST: 127.0.0.1
-            PGUSER: user_name
-            PGPASSWORD: ""
-            RAILS_ENV: test
+        environment:
+          BUNDLE_JOBS: "3"
+          BUNDLE_RETRY: "3"
+          PGHOST: 127.0.0.1
+          PGUSER: user_name
+          PGPASSWORD: ""
+          RAILS_ENV: test
       - image: circleci/postgres:9.5-alpine
-          environment:
-            POSTGRES_USER: user_name
-            POSTGRES_DB: db_name
-            POSTGRES_PASSWORD: ""
+        environment:
+          POSTGRES_USER: user_name
+          POSTGRES_DB: db_name
+          POSTGRES_PASSWORD: ""
 
 jobs:
   rubocop:
