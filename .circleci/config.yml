@@ -3,46 +3,13 @@ orbs:
   ruby: circleci/ruby@1.1.0
   node: circleci/node@2
   browser-tools: circleci/browser-tools@1.1
-
-executors:
-  working_directory: ~/rememberyou
-  ruby_and_postgres:
+jobs:
+  build:
     docker:
       - image: cimg/ruby:3.0-browsers
-        environment:
-          BUNDLE_JOBS: "3"
-          BUNDLE_RETRY: "3"
-          PGHOST: 127.0.0.1
-          PGUSER: user_name
-          PGPASSWORD: ""
-          RAILS_ENV: test
-      - image: circleci/postgres:9.5-alpine
-        environment:
-          POSTGRES_USER: user_name
-          POSTGRES_DB: db_name
-          POSTGRES_PASSWORD: ""
-
-jobs:
-  rubocop:
-    executor: ruby_and_postgres
     steps:
       - checkout
-      # バンドル キャッシュを復元
-      - restore_cache:
-          keys:
-            - rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
-            - rails-demo-bundle-v2-
-      - run:
-          name: バンドル インストール
-          command: |
-            gem install bundler -v 2.4.6
-            bundle install
-      # バンドル キャッシュを保存
-      - save_cache:
-          key: rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-      # Yarn の設定
+      - ruby/install-deps
       - restore_cache:
           keys:
             - rails-demo-yarn-{{ checksum "yarn.lock" }}
@@ -50,7 +17,32 @@ jobs:
       - run:
           name: Yarn のインストール
           command: yarn install --cache-folder ~/.cache/yarn
-      # Yarn のキャッシュを保存
+      - save_cache:
+          key: rails-demo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: yarn Install
+          command: yarn install
+  rubocop:
+    parallelism: 3
+    docker:
+      - image: cimg/ruby:3.0-browsers
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: user_name
+          POSTGRES_DB: db_name
+          POSTGRES_PASSWORD: ""
+    steps:
+      - checkout
+      - ruby/install-deps
+      - restore_cache:
+          keys:
+            - rails-demo-yarn-{{ checksum "yarn.lock" }}
+            - rails-demo-yarn-
+      - run:
+          name: Yarn のインストール
+          command: yarn install --cache-folder ~/.cache/yarn
       - save_cache:
           key: rails-demo-yarn-{{ checksum "yarn.lock" }}
           paths:
@@ -59,10 +51,36 @@ jobs:
           name: run rubocop
           command: bundle exec rubocop
   test:
-    executor: ruby_and_postgres
+    parallelism: 3
+    docker:
+      - image: cimg/ruby:3.0-browsers
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: user_name
+          POSTGRES_DB: db_name
+          POSTGRES_PASSWORD: ""
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      PGHOST: 127.0.0.1
+      PGUSER: user_name
+      PGPASSWORD: ""
+      RAILS_ENV: test
     steps:
+      - browser-tools/install-browser-tools
       - checkout
-      # DB関連の設定
+      - ruby/install-deps
+      - restore_cache:
+          keys:
+            - rails-demo-yarn-{{ checksum "yarn.lock" }}
+            - rails-demo-yarn-
+      - run:
+          name: Yarn のインストール
+          command: yarn install --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: rails-demo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run:
           name: rails db:migrate
           command: bundle exec rails db:migrate
@@ -73,7 +91,8 @@ jobs:
           name: Rspec
           command: bundle exec rspec
   deploy:
-    executor: ruby_and_postgres
+    docker:
+      - image: cimg/ruby:3.0-browsers
     steps:
       - checkout
       - run:
@@ -94,11 +113,13 @@ jobs:
             heroku run rails db:migrate --app ${HEROKU_APP_NAME_PRD}
 workflows:
   version: 2
-  build:
+  build_and_rubocop_and_test:
     jobs:
+      - build
       - rubocop
       - test
       - deploy:
           requires:
+            - build
             - rubocop
             - test
