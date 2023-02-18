@@ -80,7 +80,7 @@ jobs:
       - run:
           name: Deploy to Heroku_Production
           command: |
-            git push https://git.heroku.com/rememberyou.git develop:main
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME_PRD.git develop:main
       - run:
           name: db migration
           command: |
