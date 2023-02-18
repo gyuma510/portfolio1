@@ -58,6 +58,10 @@ jobs:
       - run:
           name: run rubocop
           command: bundle exec rubocop
+  test:
+    executor: ruby_and_postgres
+    steps:
+      - checkout
       # DB関連の設定
       - run:
           name: rails db:migrate
@@ -68,6 +72,10 @@ jobs:
       - run:
           name: Rspec
           command: bundle exec rspec
+  deploy:
+    executor: ruby_and_postgres
+    steps:
+      - checkout
       - run:
           name: 'Install Heroku CLI, if necessary'
           command: |
