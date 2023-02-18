@@ -1,7 +1,7 @@
 class RememberYou::RecordsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :show, :edit, :search]
   before_action :set_q, only: [:index, :search]
-  #before_action :guest_check, only: [:create, :update, :destroy]
+  before_action :guest_check, only: [:create, :update, :destroy]
 
   def index
     if user_signed_in?
