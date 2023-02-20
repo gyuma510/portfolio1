@@ -16,6 +16,7 @@ jobs:
       - run:
           name: yarn Install
           command: yarn install
+      - run: bundle exec bin/webpack
   rubocop:
     parallelism: 3
     docker:
@@ -82,7 +83,7 @@ jobs:
       - run:
           name: Deploy to Heroku_Production
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME_PRD.git HEAD:main
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop:main
       - run:
           name: db migration
           command: |
