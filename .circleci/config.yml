@@ -78,7 +78,9 @@ jobs:
       - run:
           name: Yarn をインストール
           command: yarn install --cache-folder ~/.cache/yarn
-
+      - run:
+          name: webpack install
+          command: bundle exec bin/webpack
       # Yarn または Webpacker のキャッシュを保存します
 
       - save_cache:
