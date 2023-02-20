@@ -66,13 +66,33 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
-      - run: yarn install
       - save_cache:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - restore_cache:
+          keys:
+            - rails-demo-yarn-{{ checksum "yarn.lock" }}
+            - rails-demo-yarn-
+
+      - run:
+          name: Yarn をインストール
+          command: yarn install --cache-folder ~/.cache/yarn
+
+      # Yarn または Webpacker のキャッシュを保存します
+
+      - save_cache:
+          key: rails-demo-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+      - run:
+          name: DB を待機
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: データベースをセットアップ
+          command: bin/rails db:schema:load --trace
       # Rspec
       - run:
           name: Rspec
