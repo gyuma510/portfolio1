@@ -21,7 +21,7 @@ class RememberYou::RecordsController < ApplicationController
 
   def create
     @user = current_user
-    @team = Team.new(team_params[:teachers_attributes].reject!{|t_a|t_a[:teacher_availability].blank?})
+    @team = Team.new(team_params[:teachers_attributes].reject! { |t_a| t_a[:teacher_availability].blank? })
     if @team.save
       flash[:success] = "保存されました"
       redirect_to remember_you_records_path
