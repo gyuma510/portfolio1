@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Users::Passwordss", type: :system do
+RSpec.describe "Users::Passwords", type: :system do
   let(:user) { create(:user) }
 
   describe "パスワード機能" do
