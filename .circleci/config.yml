@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   ruby: circleci/ruby@1.1.0
-  node: circleci/node@5.1.0
+  node: circleci/node@2
   browser-tools: circleci/browser-tools@1.1
 executors:
   working_directory: ~/rememberyou
@@ -62,6 +62,7 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+          node-version: '19.6.0'
           cache-key: "yarn.lock"
       - run: #コマンドの実行
           name: setup bundler #任意のrunの名前、バージョンを指定してBundlerをインストールする
