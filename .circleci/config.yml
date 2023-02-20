@@ -60,6 +60,9 @@ jobs:
     executor: ruby_and_postgres
     steps:
       - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
       - run: #コマンドの実行
           name: setup bundler #任意のrunの名前、バージョンを指定してBundlerをインストールする
           command: |
