@@ -90,9 +90,6 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
-          name: setup database.yml #CircleCiで構築されるDBを反映、元ファイルはmvしないで保持
-          command: cp config/database.ci.yml config/database.yml
-      - run:
           name: setup database #スキーマファイルからテーブル作成、--traceでfull_traceチェック
           command: bin/rails db:schema:load --trace
       # Rspec
