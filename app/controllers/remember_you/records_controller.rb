@@ -23,7 +23,7 @@ class RememberYou::RecordsController < ApplicationController
     @user = current_user
     @team = Team.new(team_params.
       tap do |p|
-        p[:teachers_attributes].reject! { |i| i[:teacher_availability].blank? }
+        p[:teachers_attributes].reject! { |i| i[:teacher_availability].blank?}
       end.
       tap do |p|
         p[:students_attributes].reject! { |i| i[:student_availability].blank? }

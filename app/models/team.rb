@@ -16,5 +16,5 @@ class Team < ApplicationRecord
   accepts_nested_attributes_for :teachers, allow_destroy: true
   accepts_nested_attributes_for :schools, allow_destroy: true
 
-  validates :graduation, presence: true
+  validates :graduation, presence: true, numericality: {only_integer: true, greater_than_or_equal_to: 0}
 end
