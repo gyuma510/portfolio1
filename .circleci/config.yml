@@ -6,7 +6,6 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:3.0.5-node
       - image: cimg/node:19.6.0
     steps:
       - checkout
