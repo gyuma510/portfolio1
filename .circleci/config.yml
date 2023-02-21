@@ -8,6 +8,7 @@ executors:
   ruby_and_postgres:
     docker:
       - image: cimg/node:19.6.0
+      - image: cimg/ruby:3.0.5-node
         environment:
           BUNDLE_JOBS: "3"
           BUNDLE_RETRY: "3"
