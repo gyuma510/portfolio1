@@ -49,10 +49,6 @@ jobs:
       RAILS_ENV: test
     steps:
       - checkout
-      - run:
-         name: yarn Install
-         command: yarn install
-      - run: bundle exec bin/webpack
       - browser-tools/install-browser-tools
       - ruby/install-deps
       - node/install-packages:
@@ -64,6 +60,10 @@ jobs:
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace
+      - run:
+         name: yarn Install
+         command: yarn install
+      - run: bundle exec bin/webpack
       - run:
           name: Rspec
           command: bundle exec rspec
