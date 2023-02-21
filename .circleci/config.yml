@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:19.6.0
+      - image: cimg/ruby:3.0-node
     steps:
       - checkout
       - ruby/install-deps
@@ -20,7 +20,7 @@ jobs:
   rubocop:
     parallelism: 3
     docker:
-      - image: cimg/node:19.6.0
+      - image: cimg/ruby:3.0-node
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: user_name
@@ -38,7 +38,7 @@ jobs:
   test:
     parallelism: 3
     docker:
-      - image: cimg/node:19.6.0
+      - image: cimg/ruby:3.0-node
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: user_name
