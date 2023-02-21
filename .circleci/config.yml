@@ -6,11 +6,22 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:19.6.0
-      - image: cimg/ruby:3.0-node
+      - image: cimg/ruby:3.0.5-node
     steps:
       - checkout
-      - run: node --version
+      - run:
+         name: Node バージョンの切り替え
+         command: |
+         set +e
+         wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+         export NVM_DIR="$HOME/.nvm"
+         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+         nvm install v19
+         nvm alias default 19.6.0
+
+         echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
+         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
       - ruby/install-deps
       - node/install-packages:
           pkg-manager: yarn
@@ -22,7 +33,7 @@ jobs:
   rubocop:
     parallelism: 3
     docker:
-      - image: cimg/ruby:3.0-node
+      - image: cimg/ruby:3.0.5-node
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: user_name
@@ -40,7 +51,7 @@ jobs:
   test:
     parallelism: 3
     docker:
-      - image: cimg/ruby:3.0-node
+      - image: cimg/ruby:3.0.5-node
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: user_name
@@ -71,7 +82,7 @@ jobs:
           command: bundle exec rspec
   deploy:
     docker:
-      - image: cimg/ruby:3.0-node
+      - image: cimg/ruby:3.0.5-node
     steps:
       - checkout
       - run:
