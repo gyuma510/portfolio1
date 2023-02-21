@@ -77,6 +77,7 @@ jobs:
            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
       - run: bundle exec bin/webpack
+           export NODE_OPTIONS=--openssl-legacy-provider
       - run:
           name: Rspec
           command: bundle exec rspec
