@@ -12,16 +12,12 @@ jobs:
       - run:
          name: Node バージョンの切り替え
          command: |
-         set +e
-         wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-         export NVM_DIR="$HOME/.nvm"
-         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+         curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+         echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+         source $BASH_ENV
          nvm install v19
          nvm alias default 19.6.0
-
-         echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
-         echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
       - ruby/install-deps
       - node/install-packages:
           pkg-manager: yarn
