@@ -71,13 +71,12 @@ jobs:
            export NVM_DIR="$HOME/.nvm"
            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-           nvm install v19.6.0
-           nvm alias default 19.6.0
+           nvm install v16.6.0
+           nvm alias default 16.0.0
 
            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
       - run: bundle exec bin/webpack
-           export NODE_OPTIONS=--openssl-legacy-provider
       - run:
           name: Rspec
           command: bundle exec rspec
