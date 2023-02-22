@@ -28,7 +28,7 @@
           <%= f.number_field :graduation, placeholder: "半角数字" %>
           <span>年度</span>
         </td>
-        <%= f.fields_for :schools, @team.schools.build do |school| %>
+        <%= f.fields_for "schools_attributes[]", @team.schools.build do |school| %>
           <td>
             <span>
               <%= school.text_field :school_name, placeholder: "学校名を入力" %>
@@ -59,7 +59,7 @@
       <%= f.fields_for "teachers_attributes[]", @team.teachers.build do |teacher| %>
         <tbody>
           <tr class="table-light">
-            <td><%= teacher.check_box :teacher_availability, {checked:false}, true, false %>
+            <td><%= teacher.check_box :teacher_availability, { checked:false }, "true", "false" %></td>
             <td>教員<%= i+1 %></td>
             <td><%= teacher.text_field :teacher_name, placeholder: "氏名を入力" %></td>
             <td><%= teacher.select :teacher_position, [ ["校長","校長"],["教頭","教頭"],["主任","主任"],["担任","担任"],["副担任","副担任"],["特別支援学級","特別支援学級"],["その他（備考欄へ）","その他"] ] %></td>
@@ -86,7 +86,7 @@
       <%= f.fields_for "students_attributes[]", @team.students.build do |student| %>
         <tbody>
           <tr class="table-light">
-            <td><%= student.check_box :student_availability, {checked:false}, true, false %>
+            <td><%= student.check_box :student_availability, { checked:false }, "true", "false" %>
             <td>生徒<%= i+1 %></td>
             <td><%= student.text_field :student_name, placeholder: "氏名を入力" %></td>
             <td><%= student.text_field :student_kana, placeholder: "カナを入力" %></td>

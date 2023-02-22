@@ -77,9 +77,9 @@ RSpec.describe "RememberYou::Records", type: :system do
     context "フォームの入力値が正常" do
       it "新規作成に成功すること" do
         fill_in "team[graduation]", with: team.graduation
-        fill_in "team[schools_attributes][0][school_name]", with: school.school_name
+        fill_in "team[schools_attributes][][school_name]", with: school.school_name
         find("option[value='中学校']").select_option
-        fill_in "team[schools_attributes][0][ceremony]", with: school.ceremony
+        fill_in "team[schools_attributes][][ceremony]", with: school.ceremony
         check "team[teachers_attributes][][teacher_availability]", match: :first
         fill_in "team[teachers_attributes][][teacher_name]", with: teacher.teacher_name, match: :first
         fill_in "team[teachers_attributes][][teacher_others]", with: teacher.teacher_others, match: :first
@@ -109,9 +109,9 @@ RSpec.describe "RememberYou::Records", type: :system do
     context "卒業年度が未入力" do
       it "新規作成に失敗すること" do
         fill_in "team[graduation]", with: nil
-        fill_in "team[schools_attributes][0][school_name]", with: school.school_name
+        fill_in "team[schools_attributes][][school_name]", with: school.school_name
         find("option[value='中学校']").select_option
-        fill_in "team[schools_attributes][0][ceremony]", with: school.ceremony
+        fill_in "team[schools_attributes][][ceremony]", with: school.ceremony
         check "team[teachers_attributes][][teacher_availability]", match: :first
         fill_in "team[teachers_attributes][][teacher_name]", with: teacher.teacher_name, match: :first
         fill_in "team[teachers_attributes][][teacher_others]", with: teacher.teacher_others, match: :first
@@ -128,9 +128,9 @@ RSpec.describe "RememberYou::Records", type: :system do
     context "登録にチェックを入れた教員の氏名が未入力" do
       it "新規作成に失敗すること" do
         fill_in "team[graduation]", with: team.graduation
-        fill_in "team[schools_attributes][0][school_name]", with: school.school_name
+        fill_in "team[schools_attributes][][school_name]", with: school.school_name
         find("option[value='中学校']").select_option
-        fill_in "team[schools_attributes][0][ceremony]", with: school.ceremony
+        fill_in "team[schools_attributes][][ceremony]", with: school.ceremony
         check "team[teachers_attributes][][teacher_availability]", match: :first
         fill_in "team[teachers_attributes][][teacher_name]", with: nil, match: :first
         fill_in "team[teachers_attributes][][teacher_others]", with: teacher.teacher_others, match: :first
@@ -147,9 +147,9 @@ RSpec.describe "RememberYou::Records", type: :system do
     context "登録にチェックを入れた生徒の氏名が未入力" do
       it "新規作成に失敗すること" do
         fill_in "team[graduation]", with: team.graduation
-        fill_in "team[schools_attributes][0][school_name]", with: school.school_name
+        fill_in "team[schools_attributes][][school_name]", with: school.school_name
         find("option[value='中学校']").select_option
-        fill_in "team[schools_attributes][0][ceremony]", with: school.ceremony
+        fill_in "team[schools_attributes][][ceremony]", with: school.ceremony
         check "team[teachers_attributes][][teacher_availability]", match: :first
         fill_in "team[teachers_attributes][][teacher_name]", with: teacher.teacher_name, match: :first
         fill_in "team[teachers_attributes][][teacher_others]", with: teacher.teacher_others, match: :first
@@ -166,9 +166,9 @@ RSpec.describe "RememberYou::Records", type: :system do
     context "登録にチェックを入れない場合" do
       it "チェックを入れていない教員と生徒の情報は保存されないこと" do
         fill_in "team[graduation]", with: "2025"
-        fill_in "team[schools_attributes][0][school_name]", with: school.school_name
+        fill_in "team[schools_attributes][][school_name]", with: school.school_name
         find("option[value='中学校']").select_option
-        fill_in "team[schools_attributes][0][ceremony]", with: school.ceremony
+        fill_in "team[schools_attributes][][ceremony]", with: school.ceremony
         fill_in "team[teachers_attributes][][teacher_name]", with: teacher.teacher_name, match: :first
         fill_in "team[teachers_attributes][][teacher_others]", with: teacher.teacher_others, match: :first
         fill_in "team[students_attributes][][student_name]", with: student.student_name, match: :first
