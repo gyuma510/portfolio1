@@ -1,0 +1,42 @@
+<% content_for(:title, "CONTACT") %>
+<% if flash[:failer] %>
+  <div class="alert alert-danger" role="alert">
+    <%= flash[:failer] %>
+  </div>
+<% end %>
+<% if @contact.errors.any? %>
+  <ul>
+    <% @contact.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+<%= form_with model: @contact, url:remember_you_contacts_path, method: :post, local: true do |f| %>
+  <div class="container text-center">
+    <div class="headline">
+      <h2>CONTACT</h2>
+    </div>
+    <p class="wf-sawarabimincho">
+      <span>お問い合わせ</span>
+    </p>
+  </div>
+  <div class="container text-center">
+    <div class="correct-msg-main">
+      <div class="contact-form">
+        <div class="field">
+          <%= f.label "お名前" %><br>
+          <%= f.text_field :name, placeholder: "お名前", class: "input-form" %>
+        </div>
+        <div class="field">
+          <%= f.label "お問合せ内容" %><br>
+          <%= f.text_area :content, placeholder: "お問合せ内容を入力してください", class: "input-form" %>
+        </div>
+        <%= f.submit "送信", class:"btn btn-outline-success" do %>
+        <% end %>
+        <div class="text-center">
+          <%= link_to "ホーム画面へ戻る", remember_you_records_path, class:"text-dark" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

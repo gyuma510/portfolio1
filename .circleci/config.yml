@@ -1,0 +1,115 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.0
+  node: circleci/node@2
+  browser-tools: circleci/browser-tools@1.1
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.0.5-node
+    steps:
+      - checkout
+      - ruby/install-deps
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+  rubocop:
+    parallelism: 3
+    docker:
+      - image: cimg/ruby:3.0.5-node
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: user_name
+          POSTGRES_DB: db_name
+          POSTGRES_PASSWORD: ""
+    steps:
+      - checkout
+      - ruby/install-deps
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+      - run:
+          name: run rubocop
+          command: bundle exec rubocop
+  test:
+    parallelism: 3
+    docker:
+      - image: cimg/ruby:3.0.5-node
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: user_name
+          POSTGRES_DB: db_name
+          POSTGRES_PASSWORD: ""
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      PGHOST: 127.0.0.1
+      PGUSER: user_name
+      PGPASSWORD: ""
+      RAILS_ENV: test
+    steps:
+      - checkout
+      - browser-tools/install-browser-tools
+      - ruby/install-deps
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+      - run:
+          name: rails db:migrate
+          command: bundle exec rails db:migrate
+      - run:
+          name: Database setup
+          command: bundle exec rails db:schema:load --trace
+      - run:
+         name: yarn Install
+         command: yarn install
+      - run:
+         name: Node バージョンの切り替え
+         command: |
+           set +e
+           wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+           export NVM_DIR="$HOME/.nvm"
+           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+           nvm install v16.0.0
+           nvm alias default 16.0.0
+
+           echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
+           echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      - run: bundle exec bin/webpack
+      - run:
+          name: Rspec
+          command: bundle exec rspec
+  deploy:
+    docker:
+      - image: cimg/ruby:3.0.5-node
+    steps:
+      - checkout
+      - run:
+          name: 'Install Heroku CLI, if necessary'
+          command: |
+            if [[ $(command -v heroku) == "" ]]; then
+              curl https://cli-assets.heroku.com/install.sh | sh
+            else
+              echo "Heroku is already installed. No operation was performed."
+            fi
+      - run:
+          name: Deploy to Heroku_Production
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop:main
+      - run:
+          name: db migration
+          command: |
+            heroku run rails db:migrate --app ${HEROKU_APP_NAME}
+workflows:
+  version: 2
+  build_and_rubocop_and_test:
+    jobs:
+      - build
+      - rubocop
+      - test
+      - deploy:
+          requires:
+            - build
+            - rubocop
+            - test
