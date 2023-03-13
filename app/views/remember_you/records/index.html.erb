@@ -47,6 +47,7 @@
     </tbody>
   </table>
   <div class="text-center">
+    <%= link_to "csvで出力する",remember_you_records_path(format: :csv) %>
     <%= link_to "新規作成", new_remember_you_record_path, class:"btn btn-outline-success" %>
   </div>
 <% else %>
