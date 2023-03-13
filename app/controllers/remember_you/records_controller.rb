@@ -2,10 +2,17 @@ class RememberYou::RecordsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :show, :edit, :search]
   before_action :set_q, only: [:index, :search]
   before_action :guest_check, only: [:create, :update, :destroy]
+  require 'csv'
 
   def index
     if user_signed_in?
       @teams = Team.where(user_id: current_user.id).includes(:user)
+      respond_to do |format|
+        format.html
+        format.csv do |csv|
+          send_teams_csv(@teams)
+        end
+      end
     else
       @teams = Team.all
     end
@@ -43,6 +50,28 @@ class RememberYou::RecordsController < ApplicationController
     @teachers = @team.teachers
     @students = @team.students
     @schools = @team.schools
+  end
+
+  def send_teams_csv(teams)
+    csv_data = CSV.generate do |csv|
+      header = %w(卒業年度 学校名 成人式 教員氏名 立場 備考欄 生徒氏名 氏名カナ 部活動 備考欄)
+      csv << header
+      teams.each do |team|
+        team.schools.each do |school|
+          team.teachers.each do |teacher|
+            team.students.each do |student|
+              values = [
+                team.graduation, school.school_name, school.ceremony,
+                teacher.teacher_name, teacher.teacher_position, teacher.teacher_others,
+                student.student_name, student.student_kana, student.student_club, student.student_others,
+              ]
+              csv << values
+            end
+          end
+        end
+      end
+    end
+    send_data(csv_data, filename: "teams.csv")
   end
 
   def edit
